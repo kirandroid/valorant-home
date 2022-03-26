@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:valorant_home/widgets/radianite_point.dart';
 import 'package:video_player/video_player.dart';
 import 'extension/extensions.dart';
+import 'widgets/bottom_nav_widget.dart';
+import 'widgets/play_button_clipper.dart';
 import 'widgets/valorant_point.dart';
 
 class Home extends StatefulWidget {
@@ -125,9 +128,11 @@ class _HomeState extends State<Home> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          pointWidget(points: '4356'),
+                          pointWidget(
+                              points: '4356', customPainter: ValorantPoint()),
                           20.horizontalSpace,
-                          pointWidget(points: '242'),
+                          pointWidget(
+                              points: '242', customPainter: RadianitePoint()),
                           50.horizontalSpace,
                           Stack(
                             children: [
@@ -326,11 +331,139 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              Flexible(
-                child: Container(
-                  color: Colors.green,
+              30.verticalSpace,
+              Container(
+                height: 70,
+                padding: const EdgeInsets.only(right: 50),
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CustomPaint(
+                      foregroundPainter: BottomNavWidget(),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 7,
+                          child: Row(
+                            children: [
+                              bottomNavbutton(buttonTitle: 'HOME'),
+                              bottomNavbutton(
+                                  buttonTitle: 'BATTLEPASS',
+                                  showProgressBar: true),
+                              bottomNavbutton(
+                                  buttonTitle: 'AGENTS', showProgressBar: true),
+                              bottomNavbutton(buttonTitle: 'CAREER'),
+                              bottomNavbutton(
+                                  buttonTitle: 'COLLECTION', showBorder: false),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            padding:
+                                const EdgeInsets.only(bottom: 10, left: 15),
+                            decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.tealAccent,
+                                  spreadRadius: 0,
+                                  blurRadius: 70,
+                                  offset: Offset(
+                                      0, 0), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: ClipPath(
+                              clipper: PlayButtonClipper(),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 50),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.tealAccent,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'PLAY',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                          letterSpacing: 3,
+                                          fontSize: 35,
+                                          shadows: [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              spreadRadius: 10,
+                                              blurRadius: 8,
+                                              offset: Offset(0,
+                                                  2), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 5,
+                                    top: 5,
+                                    child: Container(
+                                      height: 8,
+                                      width: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 25,
+                                    top: 5,
+                                    child: Container(
+                                      height: 8,
+                                      width: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 5,
+                                    bottom: 5,
+                                    child: Container(
+                                      height: 8,
+                                      width: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 80,
+                                    bottom: 5,
+                                    child: Container(
+                                      height: 8,
+                                      width: 8,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
-                flex: 1,
               ),
             ],
           ),
@@ -339,7 +472,68 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Row pointWidget({required String points}) {
+  Widget bottomNavbutton({
+    required String buttonTitle,
+    bool showBorder = true,
+    bool showProgressBar = false,
+  }) {
+    return Flexible(
+      flex: 1,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () {
+            _controller.pause();
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  showProgressBar
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          constraints: const BoxConstraints(minHeight: 6),
+                          child: const ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            child: LinearProgressIndicator(
+                              color: Colors.tealAccent,
+                              backgroundColor: Colors.grey,
+                              value: 0.7,
+                            ),
+                          ),
+                        )
+                      : 6.verticalSpace,
+                  5.verticalSpace,
+                  Text(
+                    buttonTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                border: Border(
+                  right: showBorder
+                      ? const BorderSide(color: Colors.white)
+                      : BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row pointWidget(
+      {required String points, required CustomPainter customPainter}) {
     return Row(
       children: [
         Container(
@@ -351,7 +545,7 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(2),
             child: CustomPaint(
               size: Size(12, (12 * 1).toDouble()),
-              painter: ValorantPoint(),
+              painter: customPainter,
             ),
           ),
         ),
